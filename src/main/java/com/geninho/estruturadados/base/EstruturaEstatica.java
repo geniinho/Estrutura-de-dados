@@ -1,16 +1,22 @@
 package com.geninho.estruturadados.base;
 
-public class EstruturaEstatica <T>{
+public class EstruturaEstatica<T> {
+
     protected T[] elementos;
     protected int tamanho;
 
+    @SuppressWarnings("unchecked")
     public EstruturaEstatica(int capacidade){
-        this.elementos = (T[]) new Object[capacidade];
+        this.elementos = (T[]) new Object[capacidade]; //solução do livro effective Java
         this.tamanho = 0;
     }
 
     public EstruturaEstatica(){
         this(10);
+    }
+
+    public boolean estaVazia(){
+        return this.tamanho == 0;
     }
 
     protected boolean adiciona(T elemento) {
@@ -25,7 +31,7 @@ public class EstruturaEstatica <T>{
 
     protected boolean adiciona(int posicao, T elemento){
 
-        if (!(posicao >= 0 && posicao < tamanho)){
+        if (posicao < 0 || posicao > tamanho){
             throw new IllegalArgumentException("Posição inválida");
         }
 
@@ -41,7 +47,18 @@ public class EstruturaEstatica <T>{
         return true;
     }
 
-    protected void aumentaCapacidade(){
+    protected void remove(int posicao){
+        if (!(posicao >= 0 && posicao < tamanho)){
+            throw new IllegalArgumentException("Posicao inválida");
+        }
+        for (int i=posicao; i<tamanho-1; i++){
+            elementos[i] = elementos[i+1];
+        }
+        tamanho--;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void aumentaCapacidade(){
         if (this.tamanho == this.elementos.length){
             T[] elementosNovos = (T[]) new Object[this.elementos.length * 2];
             for (int i=0; i<this.elementos.length; i++){
@@ -53,17 +70,6 @@ public class EstruturaEstatica <T>{
 
     public int tamanho(){
         return this.tamanho;
-    }
-
-    public boolean estaVazia(){
-        return this.tamanho == 0;
-    }
-
-    public T topo(){
-        if (estaVazia()){
-            return null;
-        }
-        return this.elementos[tamanho-1];
     }
 
     @Override
@@ -85,5 +91,4 @@ public class EstruturaEstatica <T>{
 
         return s.toString();
     }
-
 }
